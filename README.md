@@ -33,7 +33,7 @@ fn main() -> io::Result<()> {
     for row in matrix.data.iter() {
         for (j, &value) in row.iter().enumerate() {
             if j >= row.len() / 2 {
-                print!("\x1b[32m{}\x1b[0m ", value); // Colore os elementos da área direita em verde
+                print!("\x1b[32m{}\x1b[0m ", value); 
             } else {
                 print!("{} ", value);
             }
