@@ -1,58 +1,48 @@
-use serde::Deserialize;
 use std::fs::File;
-use std::io::{self, BufReader};
+use std::io::{BufReader, stdin};
+use std::path::Path;
 
-#[derive(Debug, Deserialize)]
-struct Matrix {
-    data: Vec<Vec<f64>>,
-}
+fn main() {
 
-fn main() -> io::Result<()> {
-  
-    let file = File::open("data/matriz.json")?;
+    let tamanho = 12;
+    let mut soma = 0;
+    let mut contador = 0;
+    let mut linha = 1;
+    let mut coluna = 11;
+    let mut o: String = String::new();
+    let path = Path::new("./data/matriz.json");
+    let file = File::open(&path).unwrap();
     let reader = BufReader::new(file);
-    let matrix: Matrix = serde_json::from_reader(reader)?;
+    let matriz: Vec<Vec<i32>> = serde_json::from_reader(reader).unwrap();
 
-   
-    let operation: char = {
-        let mut input = String::new();
-        io::stdin().read_line(&mut input)?;
-        input.trim().chars().next().unwrap_or(' ')
-    };
+    println!("Matriz: {:?}", matriz);
 
-  
-    let (sum, count) = matrix.data.iter().enumerate().fold((0.0, 0), |acc, (i, row)| {
-        let start_index = row.len() / 2 + 1;
-        let values = &row[start_index..];
-        let row_sum: f64 = values.iter().sum();
-        (acc.0 + row_sum, acc.1 + values.len())
-    });
+    println!("Digite a operação desejada: ");
 
- 
-    println!("Matriz com elementos da área direita destacados:");
-    for row in matrix.data.iter() {
-        for (j, &value) in row.iter().enumerate() {
-            if j >= row.len() / 2 {
-                print!("\x1b[32m{}\x1b[0m ", value); 
-            } else {
-                print!("{} ", value);
-            }
+    print!("Soma S ou Média M => ");
+    stdin().read_line(&mut o).unwrap();
+
+    let o = o.trim();
+
+    while linha < (tamanho - 1) {
+        println!("linha: {}, Coluna {}", linha, coluna);
+
+        soma += matriz[linha][coluna];
+        contador += 1;
+
+        linha += 1;
+
+        match linha {
+            1..=5 => coluna -= 1,
+            6=> coluna += 0,
+            _ => coluna += 1
         }
-        println!();
     }
 
-  
-    let result = match operation {
-        'S' => sum,
-        'M' => sum / count as f64,
-        _ => {
-            println!("Operação incorreta. Insira 'S' para Soma ou 'M' para Média.");
-            return Ok(());
-        }
-    };
+    if o == "M" {
+        println!("Média: {}", soma / contador);
+    } else {
+        println!("Soma: {}", soma);
+    }
 
-    
-    println!("Resultado: {:.1}", result);
-
-    Ok(())
 }
