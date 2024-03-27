@@ -1,9 +1,9 @@
 use std::fs::File;
 use std::io::{BufReader, stdin};
 use std::path::Path;
+use serde_json;
 
 fn main() {
-
     let tamanho = 12;
     let mut soma = 0;
     let mut contador = 0;
@@ -34,7 +34,7 @@ fn main() {
 
         match linha {
             1..=5 => coluna -= 1,
-            6=> coluna += 0,
+            6 => coluna += 0,
             _ => coluna += 1
         }
     }
@@ -44,5 +44,4 @@ fn main() {
     } else {
         println!("Soma: {}", soma);
     }
-
 }
